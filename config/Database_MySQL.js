@@ -1,6 +1,6 @@
 const { Sequelize } = require("sequelize");
 
-const db = new Sequelize("multirole_db", "root", "", {
+const db = new Sequelize("be_multirole", "root", "", {
   host: "localhost",
   dialect: "mysql",
 });

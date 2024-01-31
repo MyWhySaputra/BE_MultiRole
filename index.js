@@ -14,6 +14,16 @@ const store = new sessionStore({
   db: db,
 });
 
+(async () => {
+  try {
+    await db.authenticate({ logging: false });
+  } catch (error) {
+    await db.sync();
+    store.sync();
+  }
+})();
+
+
 app.use(
   session({
     secret: process.env.SESS_SECRET,
@@ -36,8 +46,6 @@ app.use(
 app.use(express.json());
 
 app.use("/", router);
-
-// store.sync();
 
 const port = process.env.PORT || 3000;
 

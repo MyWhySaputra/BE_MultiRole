@@ -1,6 +1,7 @@
 const Product = require("../models/ProductModel");
 const User = require("../models/UserModel");
 const { Op } = require("sequelize");
+const { ResponseTemplate } = require("../helpers/template.helper");
 
 async function getProducts(req, res) {
   try {
@@ -29,7 +30,7 @@ async function getProducts(req, res) {
         ],
       });
     }
-    res.status(200).json(response);
+    res.status(200).json(ResponseTemplate(response, "Success", null, 200));
   } catch (error) {
     res.status(500).json({ msg: error.message });
   }
@@ -42,7 +43,7 @@ async function getProductById(req, res) {
         uuid: req.params.id,
       },
     });
-    if (!product) return res.status(404).json({ msg: "Data tidak ditemukan" });
+    if (!product) return res.status(404).json(ResponseTemplate(null, "Data not found", null, 404));
     let response;
     if (req.role === "admin") {
       response = await Product.findOne({
@@ -71,23 +72,29 @@ async function getProductById(req, res) {
         ],
       });
     }
-    res.status(200).json(response);
+    res.status(200).json(ResponseTemplate(response, "Success", null, 200));
   } catch (error) {
-    res.status(500).json({ msg: error.message });
+    res.status(500).json(ResponseTemplate(null, "internal server error", error, 500));
   }
 }
 
 async function createProduct(req, res) {
   const { name, price } = req.body;
   try {
-    await Product.create({
+    const product = await Product.create({
       name: name,
       price: price,
       userId: req.userId,
     });
-    res.status(201).json({ msg: "Product Created Successfuly" });
+    const view = await Product.findOne({
+      attributes: ["uuid", "name", "price"],
+      where: {
+        id: product.id,
+      }
+    })
+    res.status(201).json(ResponseTemplate(view, "Success, product created", null, 201));
   } catch (error) {
-    res.status(500).json({ msg: error.message });
+    res.status(500).json(ResponseTemplate(null, "internal server error", error, 500));
   }
 }
 
@@ -98,7 +105,7 @@ async function updateProduct(req, res) {
         uuid: req.params.id,
       },
     });
-    if (!product) return res.status(404).json({ msg: "Data tidak ditemukan" });
+    if (!product) return res.status(404).json(ResponseTemplate(null, "Data not found", null, 404));
     const { name, price } = req.body;
     if (req.role === "admin") {
       await Product.update(
@@ -111,7 +118,7 @@ async function updateProduct(req, res) {
       );
     } else {
       if (req.userId !== product.userId)
-        return res.status(403).json({ msg: "Akses terlarang" });
+        return res.status(403).json(ResponseTemplate(null, "access denied", null, 403));
       await Product.update(
         { name, price },
         {
@@ -121,9 +128,9 @@ async function updateProduct(req, res) {
         }
       );
     }
-    res.status(200).json({ msg: "Product updated successfuly" });
+    res.status(200).json(ResponseTemplate(null, "Success, product updated", null, 200));
   } catch (error) {
-    res.status(500).json({ msg: error.message });
+    res.status(500).json(ResponseTemplate(null, "internal server error", error, 500));
   }
 }
 
@@ -134,8 +141,7 @@ async function deleteProduct(req, res) {
         uuid: req.params.id,
       },
     });
-    if (!product) return res.status(404).json({ msg: "Data tidak ditemukan" });
-    const { name, price } = req.body;
+    if (!product) return res.status(404).json(ResponseTemplate(null, "Data not found", null, 404));
     if (req.role === "admin") {
       await Product.destroy({
         where: {
@@ -144,16 +150,16 @@ async function deleteProduct(req, res) {
       });
     } else {
       if (req.userId !== product.userId)
-        return res.status(403).json({ msg: "Akses terlarang" });
+        return res.status(403).json(ResponseTemplate(null, "access denied", null, 403));
       await Product.destroy({
         where: {
           [Op.and]: [{ id: product.id }, { userId: req.userId }],
         },
       });
     }
-    res.status(200).json({ msg: "Product deleted successfuly" });
+    res.status(200).json(ResponseTemplate(null, "Success, product deleted", null, 200));
   } catch (error) {
-    res.status(500).json({ msg: error.message });
+    res.status(500).json(ResponseTemplate(null, "internal server error", error, 500));
   }
 }
 

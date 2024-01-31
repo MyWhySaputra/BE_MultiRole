@@ -1,14 +1,17 @@
 const User = require("../models/UserModel");
 const argon2 = require("argon2");
+const { ResponseTemplate } = require("../helpers/template.helper");
 
 async function getUsers(req, res) {
   try {
     const response = await User.findAll({
       attributes: ["uuid", "name", "email", "role"],
     });
-    res.status(200).json(response);
+    res.status(200).json(ResponseTemplate(response, "Success", null, 200));
   } catch (error) {
-    res.status(500).json({ msg: error.message });
+    res
+      .status(500)
+      .json(ResponseTemplate(null, "internal server error", error, 500));
   }
 }
 
@@ -20,9 +23,11 @@ async function getUserById(req, res) {
         uuid: req.params.id,
       },
     });
-    res.status(200).json(response);
+    res.status(200).json(ResponseTemplate(response, "Success", null, 200));
   } catch (error) {
-    res.status(500).json({ msg: error.message });
+    res
+      .status(500)
+      .json(ResponseTemplate(null, "internal server error", error, 500));
   }
 }
 
@@ -31,18 +36,27 @@ async function createUser(req, res) {
   if (password !== confPassword)
     return res
       .status(400)
-      .json({ msg: "Password dan Confirm Password tidak cocok" });
+      .json(ResponseTemplate(null, "Password and Confirm Password not match", null, 400));
   const hashPassword = await argon2.hash(password);
   try {
-    await User.create({
+    const response = await User.create({
       name: name,
       email: email,
       password: hashPassword,
       role: role,
     });
-    res.status(201).json({ msg: "Register Berhasil" });
+
+    const view = await User.findOne({
+      attributes: ["uuid", "name", "email", "role"],
+      where: {
+        uuid: response.uuid,
+      }
+    })
+    res.status(201).json(ResponseTemplate(view, "Success, user created", null, 201));
   } catch (error) {
-    res.status(400).json({ msg: error.message });
+    res
+      .status(400)
+      .json(ResponseTemplate(null, "internal server error", error, 500));
   }
 }
 
@@ -52,7 +66,7 @@ async function updateUser(req, res) {
       uuid: req.params.id,
     },
   });
-  if (!user) return res.status(404).json({ msg: "User tidak ditemukan" });
+  if (!user) return res.status(404).json(ResponseTemplate(null, "User not found", null, 404));
   const { name, email, password, confPassword, role } = req.body;
   let hashPassword;
   if (password === "" || password === null) {
@@ -63,7 +77,7 @@ async function updateUser(req, res) {
   if (password !== confPassword)
     return res
       .status(400)
-      .json({ msg: "Password dan Confirm Password tidak cocok" });
+      .json(ResponseTemplate(null, "Password and Confirm Password not match", null, 400));
   try {
     await User.update(
       {
@@ -78,9 +92,18 @@ async function updateUser(req, res) {
         },
       }
     );
-    res.status(200).json({ msg: "User Updated" });
+
+    const view = await User.findOne({
+      attributes: ["uuid", "name", "email", "role"],
+      where: {
+        uuid: req.params.id,
+      }
+    })
+    res.status(200).json(ResponseTemplate(view, "Success, user updated", null, 200));
   } catch (error) {
-    res.status(400).json({ msg: error.message });
+    res
+      .status(400)
+      .json(ResponseTemplate(null, "internal server error", error, 500));
   }
 }
 
@@ -90,16 +113,18 @@ async function deleteUser(req, res) {
       uuid: req.params.id,
     },
   });
-  if (!user) return res.status(404).json({ msg: "User tidak ditemukan" });
+  if (!user) return res.status(404).json(ResponseTemplate(null, "User not found", null, 404));
   try {
     await User.destroy({
       where: {
         id: user.id,
       },
     });
-    res.status(200).json({ msg: "User Deleted" });
+    res.status(200).json(ResponseTemplate(null, "Success, user deleted", null, 200));
   } catch (error) {
-    res.status(400).json({ msg: error.message });
+    res
+      .status(400)
+      .json(ResponseTemplate(null, "internal server error", error, 500));
   }
 }
 
