@@ -5,6 +5,8 @@ const session = require("express-session");
 const db = require("./config/Database_MySQL");
 const SequelizeStore = require("connect-session-sequelize");
 const router = require("./routes/routes");
+const swaggerUi = require("swagger-ui-express");
+const swagger = require("./helpers/swagger.helper");
 
 const app = express();
 
@@ -46,6 +48,14 @@ app.use(
 app.use(express.json());
 
 app.use("/", router);
+app.use("/docs", swaggerUi.serve, swagger);
+
+const path = require("path");
+
+app.get("/", (req, res) => {
+  const filePath = path.join(__dirname, "views", "home.html");
+  res.sendFile(filePath);
+});
 
 const port = process.env.PORT || 3000;
 
