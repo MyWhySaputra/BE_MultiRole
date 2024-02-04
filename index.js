@@ -16,15 +16,13 @@ const store = new sessionStore({
   db: db,
 });
 
-(async () => {
-  try {
-    await db.authenticate({ logging: false });
-  } catch (error) {
-    await db.sync();
-    store.sync();
-  }
-})();
+// Migrate database
 
+// (async () => {
+//   await db.sync();
+// })();
+
+// store.sync();
 
 app.use(
   session({

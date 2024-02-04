@@ -3,11 +3,11 @@ POST http://localhost:8080/api/v1/users
 Content-Type: application/json
 
 {
-  "name": "Mochamad",
-  "email": "user@gmail.com",
-  "password": "123456",
-  "confPassword": "123456",
-  "role": "user"
+  "name": "Admin",
+  "email": "admin@gmail.com",
+  "password": "admin123",
+  "confPassword": "admin123",
+  "role": "admin"
 }
 
 ###
@@ -21,7 +21,7 @@ PATCH http://localhost:8080/api/v1/users/915ef5cf-b896-490a-b026-16ae7f40a4d5
 Content-Type: application/json
 
 {
-  "name": "Wahyu update",
+  "name": "user update",
   "email": "user@gmail.com",
   "password": "",
   "confPassword": "",

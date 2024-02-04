@@ -27,8 +27,8 @@ swaggerOptions = {
   },
   apis: [
     "./routes/v1/AuthRoute.js",
-    "./routes/v1/ProductRoute.js",
     "./routes/v1/UserRoute.js",
+    "./routes/v1/ProductRoute.js",
   ],
 };
 
