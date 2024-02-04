@@ -7,6 +7,8 @@ const {
   deleteUser,
 } = require("../../controllers/UsersController");
 const { verifyUser, adminOnly } = require("../../middleware/AuthUser");
+const { uuid } = require("../../middleware/Middleware");
+const { midd_create, midd_Update } = require("../../middleware/UserMiddleware");
 
 const router = express.Router();
 
@@ -37,9 +39,9 @@ router.get("/users", verifyUser, adminOnly, getUsers);
  *       - in: path
  *         name: id
  *         required: true
- *         description: The id of the user
+ *         description: The uuid of the user
  *         schema:
- *           type: integer
+ *           type: string
  *     responses:
  *       200:
  *         description: Successful response
@@ -48,7 +50,7 @@ router.get("/users", verifyUser, adminOnly, getUsers);
  *       500:
  *         description: Internal server error
  */
-router.get("/users/:id", verifyUser, adminOnly, getUserById);
+router.get("/users/:id", verifyUser, adminOnly, uuid, getUserById);
 /**
  * @swagger
  * /api/v1/users:
@@ -81,7 +83,7 @@ router.get("/users/:id", verifyUser, adminOnly, getUserById);
  *       500:
  *         description: Internal server error
  */
-router.post("/users", verifyUser, adminOnly, createUser);
+router.post("/users", verifyUser, adminOnly, midd_create, createUser);
 /**
  * @swagger
  * /api/v1/users/{id}:
@@ -93,9 +95,9 @@ router.post("/users", verifyUser, adminOnly, createUser);
  *       - in: path
  *         name: id
  *         required: true
- *         description: The id of the user
+ *         description: The uuid of the user
  *         schema:
- *           type: integer
+ *           type: string
  *     requestBody:
  *        required: true
  *        content:
@@ -121,7 +123,7 @@ router.post("/users", verifyUser, adminOnly, createUser);
  *       500:
  *         description: Internal server error
  */
-router.patch("/users/:id", verifyUser, adminOnly, updateUser);
+router.patch("/users/:id", verifyUser, adminOnly, uuid, midd_Update, updateUser);
 /**
  * @swagger
  * /api/v1/users/{id}:
@@ -133,9 +135,9 @@ router.patch("/users/:id", verifyUser, adminOnly, updateUser);
  *       - in: path
  *         name: id
  *         required: true
- *         description: The id of the user
+ *         description: The uuid of the user
  *         schema:
- *           type: integer
+ *           type: string
  *     responses:
  *       200:
  *         description: Successful response
@@ -144,6 +146,6 @@ router.patch("/users/:id", verifyUser, adminOnly, updateUser);
  *       500:
  *         description: Internal server error
  */
-router.delete("/users/:id", verifyUser, adminOnly, deleteUser);
+router.delete("/users/:id", verifyUser, adminOnly, uuid, deleteUser);
 
 module.exports = router;

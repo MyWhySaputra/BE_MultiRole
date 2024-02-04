@@ -7,6 +7,8 @@ const {
   deleteProduct,
 } = require("../../controllers/ProductsController");
 const { verifyUser } = require("../../middleware/AuthUser");
+const { uuid } = require("../../middleware/Middleware");
+const { midd_create, midd_Update } = require("../../middleware/ProductMiddleware");
 
 const router = express.Router();
 
@@ -37,9 +39,9 @@ router.get("/products", verifyUser, getProducts);
  *       - in: path
  *         name: id
  *         required: true
- *         description: The id of the product
+ *         description: The uuid of the product
  *         schema:
- *           type: integer
+ *           type: string
  *     responses:
  *       200:
  *         description: Successful response
@@ -48,7 +50,7 @@ router.get("/products", verifyUser, getProducts);
  *       500:
  *         description: Internal server error
  */
-router.get("/products/:id", verifyUser, getProductById);
+router.get("/products/:id", verifyUser, uuid, getProductById);
 /**
  * @swagger
  * /api/v1/products:
@@ -75,7 +77,7 @@ router.get("/products/:id", verifyUser, getProductById);
  *       500:
  *         description: Internal server error
  */
-router.post("/products", verifyUser, createProduct);
+router.post("/products", verifyUser, midd_create, createProduct);
 /**
  * @swagger
  * /api/v1/products/{id}:
@@ -87,9 +89,9 @@ router.post("/products", verifyUser, createProduct);
  *       - in: path
  *         name: id
  *         required: true
- *         description: The id of the product
+ *         description: The uuid of the product
  *         schema:
- *           type: integer
+ *           type: string
  *     requestBody:
  *        required: true
  *        content:
@@ -109,7 +111,7 @@ router.post("/products", verifyUser, createProduct);
  *       500:
  *         description: Internal server error
  */
-router.patch("/products/:id", verifyUser, updateProduct);
+router.patch("/products/:id", verifyUser, uuid, midd_Update, updateProduct);
 /**
  * @swagger
  * /api/v1/products/{id}:
@@ -121,9 +123,9 @@ router.patch("/products/:id", verifyUser, updateProduct);
  *       - in: path
  *         name: id
  *         required: true
- *         description: The id of the product
+ *         description: The uuid of the product
  *         schema:
- *           type: integer
+ *           type: string
  *     responses:
  *       200:
  *         description: Successful response
@@ -132,6 +134,6 @@ router.patch("/products/:id", verifyUser, updateProduct);
  *       500:
  *         description: Internal server error
  */
-router.delete("/products/:id", verifyUser, deleteProduct);
+router.delete("/products/:id", verifyUser, uuid, deleteProduct);
 
 module.exports = router;

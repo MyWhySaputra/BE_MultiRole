@@ -1,5 +1,6 @@
 const express = require("express");
 const { Login, logOut, Me } = require("../../controllers/AuthController");
+const { midd_login } = require("../../middleware/Middleware");
 
 const router = express.Router();
 
@@ -43,7 +44,7 @@ router.get("/me", Me);
  *       400:
  *         description: Bad request
  */
-router.post("/login", Login);
+router.post("/login", midd_login, Login);
 /**
  * @swagger
  * /api/v1/logout:
