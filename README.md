@@ -10,11 +10,16 @@
 
 ## Deploy in Vercel
 
-    
+    https://be-multi-role.vercel.app/
 
 ## Documentation in swagger
 
-    /docs
+    https://be-multi-role.vercel.app/docs
+
+## Akun Demo
+
+    email    : admin@gmail.com
+    password : admin123
 
 # ERD
 
