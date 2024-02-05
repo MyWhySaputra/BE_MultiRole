@@ -1,4 +1,5 @@
 const { Sequelize } = require("sequelize");
+const { mysql2 } = require("mysql2");
 
 // Database Local
 
@@ -15,6 +16,7 @@ const db = new Sequelize(
     host: process.env.MYSQL_HOSTNAME,
     port: process.env.MYSQL_PORT,
     dialect: "mysql",
+    dialectModule: mysql2,
   }
 );
 
