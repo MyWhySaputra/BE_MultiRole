@@ -39,7 +39,9 @@ app.use(
 app.use(
   cors({
     credentials: true, // untuk fontend mengirimkan cookie
-    origin: "http://localhost:3000/", // alamat frontend yang diizinkan
+    origin: true, // Gantilah dengan origin aplikasi frontend Anda (alamat frontend yang diizinkan)
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    optionsSuccessStatus: 204,
   })
 );
 
