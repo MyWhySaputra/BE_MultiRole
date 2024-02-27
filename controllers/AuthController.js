@@ -18,7 +18,9 @@ async function Login(req, res) {
 
 async function Me(req, res) {
   if (!req.session.userId) {
-    return res.status(401).json(ResponseTemplate(null, "Unauthorized", null, 401));
+    res.status(401).json(ResponseTemplate(null, "Unauthorized", null, 401));
+    res.clearCookie("connect.sid", { path: "/" });
+    return;
   }
   const user = await User.findOne({
     attributes: ["uuid", "name", "email", "role"],
