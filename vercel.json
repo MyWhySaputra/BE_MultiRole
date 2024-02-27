@@ -9,17 +9,12 @@
   ],
   "routes": [
     {
-      "src": "/api/v1/login",
-      "dest": "index.js" 
-    },
-    {
-      "src": "/api/v1/me",
-      "dest": "index.js", 
+      "src": "/(.*)",
+      "dest": "index.js",
       "methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
       "headers": {
         "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Credentials": "true",
-        "Cache-Control": "no-cache"
+        "Access-Control-Allow-Credentials": "true"
       }
     }
   ]
