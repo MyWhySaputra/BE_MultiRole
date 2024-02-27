@@ -35,6 +35,7 @@ async function logOut(req, res) {
     if (err) return res.status(400).json(ResponseTemplate(null, "Failed to logout", err, 400));
     res.status(200).json(ResponseTemplate(null, "Success to logout", null, 200));
   });
+  res.clearCookie("connect.sid", { path: "/" });
 }
 
 module.exports = {
