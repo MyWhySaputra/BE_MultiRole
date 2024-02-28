@@ -18,7 +18,6 @@ async function Login(req, res) {
 
 async function Me(req, res) {
   if (!req.session.userId) {
-    res.clearCookie("connect.sid", { path: "/" });
     return res.status(401).json(ResponseTemplate(null, "Unauthorized", null, 401));
   }
   const user = await User.findOne({
@@ -36,7 +35,6 @@ async function logOut(req, res) {
     if (err) return res.status(400).json(ResponseTemplate(null, "Failed to logout", err, 400));
     res.status(200).json(ResponseTemplate(null, "Success to logout", null, 200));
   });
-  res.clearCookie("connect.sid", { path: "/" });
 }
 
 module.exports = {
